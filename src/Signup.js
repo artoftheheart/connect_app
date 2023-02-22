@@ -23,22 +23,58 @@ const Signup = () => {
     const passwordChange = (event) => {
         setPassword(event.target.value);
         //console.log(password);
+
+        if (event.target.value === confirmPassword) {
+            setErrorMessage("");
+        }
     }
+
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const confirmPasswordChange = (event) => {
+        setConfirmPassword(event.target.value);
+
+        if (event.target.value !== password){
+            setErrorMessage("Passwords don't match. Try again.")
+        } else {
+            setErrorMessage('');
+        }
+
+    } 
+
+    const [errorMessage, setErrorMessage] = useState('');
+
 
     return (
         <div className="sign-up">
             
             <h2>Sign up</h2>
             
-            <label for="email">Email:</label>
-            <input type="email" name="email" id="email" onChange={emailChange}/>
+            <label htmlFor="email">Email:</label>
+            <input type="email" name="email" id="email-sign-up" onChange={emailChange}/>
 
             <br/>
 
-            <label for="password">Password:</label>
-            <input type="password" name="password" id="password" onChange={passwordChange}/>
+            <label htmlFor="password">Password:</label>
+            <input type="password" name="password" id="password-sign-up" onChange={passwordChange}/>
 
-            <button onClick={() => newUser(email, password)}>Click</button>
+            <br/>
+
+            <label htmlFor="password-confirm">Confirm Password:</label>
+            <input type="password" name="password-confirm" id="password-confirm-sign-up" onChange={confirmPasswordChange}/>
+
+            <br/>
+
+            <label htmlFor="sign-up-checkbox">I accept the terms and conditions.</label>
+            <input type="checkbox" name="sign-up-checkbox" id="sign-up-checkbox" />
+
+            <br/>
+
+            <button 
+                onClick={() => newUser(email, password, setErrorMessage)} 
+                disabled={password !== confirmPassword || email==='' || password==='' || !(document.getElementById("sign-up-checkbox").checked)}
+            >Sign Up</button>
+
+            <div className="error-message"> {errorMessage} </div>
 
         </div>
     );

@@ -1,5 +1,19 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+
+import { 
+    getAuth, 
+    createUserWithEmailAndPassword, 
+    signInWithEmailAndPassword, 
+    signOut, 
+    onAuthStateChanged, 
+    sendEmailVerification,
+    EmailAuthProvider,
+    reauthenticateWithCredential,
+    updatePassword,
+    updateEmail,
+    sendPasswordResetEmail
+} 
+from "firebase/auth";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCg8KffZwXeQkq_TBBCqT6jT58Zi5utAro",
@@ -17,20 +31,128 @@ const app = initializeApp(firebaseConfig);
 // Initialize Firebase Authentication and get a reference to the service
 const auth = getAuth(app);
 
+// possible error messages to be displayed to the user.
+const possibleErrorMessages = {
+    "auth/email-already-in-use": "Email already in use. Please use another email, or sign in instead.",
+    "auth/user-not-found": "User not found. Try signing up instead.",
+    "auth/invalid-email": "Invalid email. Please use another email.",
+    "auth/missing-email": "Please enter an email.",
+    "auth/internal-error": "There was an error. Please check your email and password and try again.",
+    "auth/weak-password": "Password should be at least 6 characters long. Please use a stronger password.",
+    "auth/wrong-password": "Wrong password. Please try again.",
+};
 
-export function newUser(email, password) {
+export function newUser(email, password, setErrorMessage) {
     createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
-            console.log(email, password);
+
             // Signed in 
+            //console.log(email, password);
+            
             const user = userCredential.user;
             console.log(user);
-            // ...
+
+            sendEmailVerification(auth.currentUser)
+                .then(() => {
+                    //console.log("sent")
+                    // Email verification sent!
+
+                    setErrorMessage("Please verify your email by clicking the link in the email sent to your inbox.")
+                });
+
         })
         .catch((error) => {
             const errorCode = error.code;
-            const errorMessage = error.message;
-            console.log(errorCode, errorMessage);
-            // ..
+            //const errorMessage = error.message;
+
+            setErrorMessage(possibleErrorMessages[errorCode]);
+            
+            //console.log(errorCode, errorMessage);
+
         });
+};
+
+export function logIn(email, password, setErrorMessage){
+
+    console.log(password);
+
+    signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+
+            const user = userCredential.user;
+            console.log(user);
+
+        })
+        .catch((error) => {
+            
+            const errorCode = error.code;
+            //const errorMessage = error.message;
+
+            setErrorMessage(possibleErrorMessages[errorCode]);
+            
+            //console.log(errorCode, errorMessage);
+        })
+
+}
+
+export function logOut () {
+    signOut(auth).then(()=> {
+        console.log("signed out")
+
+    }).catch((error) => {
+        console.log(error);
+    });
+}
+
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // User is signed in, see docs for a list of available properties
+      // https://firebase.google.com/docs/reference/js/firebase.User
+      const uid = user.uid;
+      // ...
+    } else {
+      // User is signed out
+      // ...
+    }
+});
+
+export function changePassword (currentPassword, newPassword) {
+    const credential = EmailAuthProvider.credential(
+        auth.currentUser.email,
+        currentPassword
+    )
+
+    reauthenticateWithCredential(auth.currentUser, credential);
+
+    updatePassword(auth.currentUser, newPassword).then(() => {
+        console.log("password changed", newPassword);
+    }).catch((error) => {
+        console.log(error);
+    });
+}
+
+export function changeEmail (currentPassword, newEmail) {
+
+    const credential = EmailAuthProvider.credential(
+        auth.currentUser.email,
+        currentPassword
+    )
+
+    reauthenticateWithCredential(auth.currentUser, credential);
+
+    updateEmail(auth.currentUser, newEmail).then(() => {
+        console.log("email changed", newEmail);
+    }).catch((error) => {
+        console.log(error);
+    })
+
+}
+
+export function resetPassword (email) {
+    sendPasswordResetEmail(auth, email)
+    .then(() => {
+        console.log("password reset email sent");
+    }).catch((error) => {
+        console.log(error); 
+    })
 }
