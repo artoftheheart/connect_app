@@ -1,13 +1,13 @@
-import { logOut } from "./firebase";
+import { logOut } from "../firebase";
 
-const Signout = () => {
+const Signout = ({setUser}) => {
     return ( 
 
         <div className="sign-out">
             
             <h2>Sign Out</h2>
 
-            <button onClick={() => logOut()}>Sign out</button>
+            <button onClick={() => logOut(setUser)}>Sign out</button>
 
         </div>
      );

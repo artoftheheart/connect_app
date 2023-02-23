@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { newUser } from "./firebase.js"
+import { newUser } from "../firebase.js"
 
 /*
 user: amanda@artoftheheartmusic.org
@@ -11,7 +11,7 @@ password: amanda
 */
 
 
-const Signup = () => {
+const Signup = ({setUser}) => {
 
     const [email, setEmail] = useState('');
     const emailChange = (event) => {
@@ -25,7 +25,7 @@ const Signup = () => {
         //console.log(password);
 
         if (event.target.value === confirmPassword) {
-            setErrorMessage("");
+            setErrorMessage('');
         }
     }
 
@@ -65,13 +65,13 @@ const Signup = () => {
             <br/>
 
             <label htmlFor="sign-up-checkbox">I accept the terms and conditions.</label>
-            <input type="checkbox" name="sign-up-checkbox" id="sign-up-checkbox" />
+            <input type="checkbox" name="sign-up-checkbox" id="sign-up-checkbox"/>
 
             <br/>
 
             <button 
-                onClick={() => newUser(email, password, setErrorMessage)} 
-                disabled={password !== confirmPassword || email==='' || password==='' || !(document.getElementById("sign-up-checkbox").checked)}
+                onClick={() => newUser(email, password, setErrorMessage, setUser)} 
+                //disabled={errorMessage===''|| email==='' || password==='' || !(document.getElementById("sign-up-checkbox").checked)}>
             >Sign Up</button>
 
             <div className="error-message"> {errorMessage} </div>

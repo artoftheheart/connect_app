@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { changeEmail } from "./firebase";
+import { changeEmail } from "../firebase";
 
 const ChangeEmail = () => {
 

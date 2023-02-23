@@ -42,7 +42,7 @@ const possibleErrorMessages = {
     "auth/wrong-password": "Wrong password. Please try again.",
 };
 
-export function newUser(email, password, setErrorMessage) {
+export function newUser(email, password, setErrorMessage, setUser) {
     createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
 
@@ -50,7 +50,8 @@ export function newUser(email, password, setErrorMessage) {
             //console.log(email, password);
             
             const user = userCredential.user;
-            console.log(user);
+            //console.log(user);
+            setUser(user.email);
 
             sendEmailVerification(auth.currentUser)
                 .then(() => {
@@ -72,15 +73,16 @@ export function newUser(email, password, setErrorMessage) {
         });
 };
 
-export function logIn(email, password, setErrorMessage){
+export function logIn(email, password, setErrorMessage, setUser){
 
-    console.log(password);
+    //console.log(password);
 
     signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
 
             const user = userCredential.user;
-            console.log(user);
+            //console.log(user);
+            setUser(user.email);
 
         })
         .catch((error) => {
@@ -95,9 +97,10 @@ export function logIn(email, password, setErrorMessage){
 
 }
 
-export function logOut () {
+export function logOut (setUser) {
     signOut(auth).then(()=> {
-        console.log("signed out")
+        //console.log("signed out");
+        setUser("none");
 
     }).catch((error) => {
         console.log(error);
@@ -106,13 +109,14 @@ export function logOut () {
 
 onAuthStateChanged(auth, (user) => {
     if (user) {
-      // User is signed in, see docs for a list of available properties
-      // https://firebase.google.com/docs/reference/js/firebase.User
-      const uid = user.uid;
-      // ...
+      // User is signed in
+      //const uid = user.uid;
+
+      
+
     } else {
       // User is signed out
-      // ...
+
     }
 });
 

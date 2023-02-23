@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { logIn } from "./firebase";
+import { logIn } from "../firebase";
 
-const Signin = () => {
+const Signin = ({setUser}) => {
 
     const [email, setEmail] = useState('');
     const emailChange = (event) => {
@@ -32,7 +32,7 @@ const Signin = () => {
 
             <br/>
 
-            <button onClick={() => logIn(email, password, setErrorMessage)}>Sign In</button>
+            <button onClick={() => logIn(email, password, setErrorMessage, setUser)}>Sign In</button>
 
             <div className="error-message"> {errorMessage} </div>
 

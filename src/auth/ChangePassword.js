@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { changePassword } from "./firebase";
+import { changePassword } from "../firebase";
 
 const ChangePassword = () => {
 
