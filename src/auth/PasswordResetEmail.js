@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { resetPassword } from "../firebase";
+import OpenEnded from "../util/OpenEnded";
 
 const PasswordResetEmail = () => {
     
@@ -13,11 +14,8 @@ const PasswordResetEmail = () => {
 
             <h2>Reset Password</h2>
 
-            <label htmlFor="email">Email:</label>
-            <input type="email" name="email" id="email-reset-password" onChange={emailChange}/>
-
-            <br/>
-
+            <OpenEnded question="Email:" setResponse={setEmail} type="email"/>
+            
             <button onClick={() => resetPassword(email)}>Send Password Reset Email</button>
 
         </div>

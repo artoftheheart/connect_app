@@ -1,5 +1,5 @@
+// import functions from firebase using npm
 import { initializeApp } from "firebase/app";
-
 import { 
     getAuth, 
     createUserWithEmailAndPassword, 
@@ -15,6 +15,7 @@ import {
 } 
 from "firebase/auth";
 
+// firebase configuration from the firebase console -> project settings -> general
 const firebaseConfig = {
     apiKey: "AIzaSyCg8KffZwXeQkq_TBBCqT6jT58Zi5utAro",
     authDomain: "connect-app-87d8b.firebaseapp.com",
@@ -42,7 +43,15 @@ const possibleErrorMessages = {
     "auth/wrong-password": "Wrong password. Please try again.",
 };
 
+/**
+ * creates a new user with email and password
+ * @param {string} email 
+ * @param {string} password 
+ * @param {Function} setErrorMessage 
+ * @param {Function} setUser 
+ */
 export function newUser(email, password, setErrorMessage, setUser) {
+
     createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
 

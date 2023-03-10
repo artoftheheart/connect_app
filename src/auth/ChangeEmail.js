@@ -1,33 +1,20 @@
 import { useState } from "react";
 import { changeEmail } from "../firebase";
+import OpenEnded from "../util/OpenEnded";
 
 const ChangeEmail = () => {
 
     const [password, setPassword] = useState('');
-    const passwordChange = (event) => {
-        setPassword(event.target.value);
-    }
-
     const [newEmail, setNewEmail] = useState('');
-    const newEmailChange = (event) => {
-        setNewEmail(event.target.value);
-    }
-
 
     return (  
         <div className="change-email">
 
             <h2>Change Email</h2>
 
-            <label htmlFor="password">Password:</label>
-            <input type="password" name="password" id="password-email-change" onChange={passwordChange}/>
+            <OpenEnded question="Password:" setResponse={setPassword} type="password"/>
 
-            <br/>
-
-            <label htmlFor="new-email">New Email:</label>
-            <input type="email" name="new-email" id="email-change" onChange={newEmailChange} />
-
-            <br/> 
+            <OpenEnded question="New Email:" setResponse={setNewEmail} type="email"/>
 
             <button onClick={() => changeEmail(password, newEmail)}>Change Email</button>
 

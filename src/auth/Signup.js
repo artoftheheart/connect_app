@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { newUser } from "../firebase.js"
+import MultipleChoice from "../util/MultipleChoice.js";
+import OpenEnded from "../util/OpenEnded";
 
 /*
 user: amanda@artoftheheartmusic.org
@@ -14,55 +16,31 @@ password: amanda
 const Signup = ({setUser}) => {
 
     const [email, setEmail] = useState('');
-    const emailChange = (event) => {
-        setEmail(event.target.value);
-        //console.log(email);
-    }
-
     const [password, setPassword] = useState('');
-    const passwordChange = (event) => {
-        setPassword(event.target.value);
-        //console.log(password);
-
-        if (event.target.value === confirmPassword) {
-            setErrorMessage('');
-        }
-    }
-
     const [confirmPassword, setConfirmPassword] = useState('');
-    const confirmPasswordChange = (event) => {
-        setConfirmPassword(event.target.value);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [userType, setUserType] = useState('');
 
-        if (event.target.value !== password){
+    useEffect(() => {
+        if (password !== confirmPassword) {
             setErrorMessage("Passwords don't match. Try again.")
         } else {
             setErrorMessage('');
         }
-
-    } 
-
-    const [errorMessage, setErrorMessage] = useState('');
-
+    }, [password, confirmPassword]);
 
     return (
         <div className="sign-up">
             
             <h2>Sign up</h2>
-            
-            <label htmlFor="email">Email:</label>
-            <input type="email" name="email" id="email-sign-up" onChange={emailChange}/>
 
-            <br/>
+            <OpenEnded question="Email:" setResponse={setEmail} type="email"/>
 
-            <label htmlFor="password">Password:</label>
-            <input type="password" name="password" id="password-sign-up" onChange={passwordChange}/>
+            <OpenEnded question="Password:" setResponse={setPassword} type="password"/>
 
-            <br/>
+            <OpenEnded question="Confirm Password:" setResponse={setConfirmPassword} type="password"/>
 
-            <label htmlFor="password-confirm">Confirm Password:</label>
-            <input type="password" name="password-confirm" id="password-confirm-sign-up" onChange={confirmPasswordChange}/>
-
-            <br/>
+            <MultipleChoice question="User Type:" options={["Student", "Teacher", "Parent"]} setResponse={setUserType}/>
 
             <label htmlFor="sign-up-checkbox">I accept the terms and conditions.</label>
             <input type="checkbox" name="sign-up-checkbox" id="sign-up-checkbox"/>
