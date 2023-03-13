@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { newUser } from "../firebase.js"
+import { newUser } from "../util/firebase.js"
 import MultipleChoice from "../util/MultipleChoice.js";
 import OpenEnded from "../util/OpenEnded";
 
@@ -19,6 +19,7 @@ const Signup = ({setUser}) => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [checkbox, setCheckbox] = useState(false);
     const [userType, setUserType] = useState('');
 
     useEffect(() => {
@@ -40,16 +41,15 @@ const Signup = ({setUser}) => {
 
             <OpenEnded question="Confirm Password:" setResponse={setConfirmPassword} type="password"/>
 
-            <MultipleChoice question="User Type:" options={["Student", "Teacher", "Parent"]} setResponse={setUserType}/>
+            <MultipleChoice question="User Type:" options={["Student", "Facility"]} setResponse={setUserType}/>
 
-            <label htmlFor="sign-up-checkbox">I accept the terms and conditions.</label>
-            <input type="checkbox" name="sign-up-checkbox" id="sign-up-checkbox"/>
+            <MultipleChoice question="" options={["I accept the terms and conditions."]} type="checkbox" setResponse={setCheckbox}/>
 
             <br/>
 
             <button 
-                onClick={() => newUser(email, password, setErrorMessage, setUser)} 
-                //disabled={errorMessage===''|| email==='' || password==='' || !(document.getElementById("sign-up-checkbox").checked)}>
+                onClick={() => newUser(email, password, userType, setErrorMessage, setUser)} 
+                disabled={!(checkbox)}
             >Sign Up</button>
 
             <div className="error-message"> {errorMessage} </div>

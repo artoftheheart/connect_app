@@ -11,9 +11,21 @@ import {
     reauthenticateWithCredential,
     updatePassword,
     updateEmail,
-    sendPasswordResetEmail
+    sendPasswordResetEmail,
+    updateProfile
 } 
 from "firebase/auth";
+
+import { 
+        getFirestore,
+        doc,
+        setDoc,
+        updateDoc,
+        getDoc
+} 
+from "firebase/firestore";
+
+import { StudentInformation } from "../form/InformationClass";
 
 // firebase configuration from the firebase console -> project settings -> general
 const firebaseConfig = {
@@ -31,6 +43,9 @@ const app = initializeApp(firebaseConfig);
 
 // Initialize Firebase Authentication and get a reference to the service
 const auth = getAuth(app);
+
+// Initialize Firebase Firestore and get a reference to the service
+const db = getFirestore(app);
 
 // possible error messages to be displayed to the user.
 const possibleErrorMessages = {
@@ -50,7 +65,7 @@ const possibleErrorMessages = {
  * @param {Function} setErrorMessage 
  * @param {Function} setUser 
  */
-export function newUser(email, password, setErrorMessage, setUser) {
+export function newUser(email, password, userType, setErrorMessage, setUser) {
 
     createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
@@ -70,6 +85,19 @@ export function newUser(email, password, setErrorMessage, setUser) {
                     setErrorMessage("Please verify your email by clicking the link in the email sent to your inbox.")
                 });
 
+            if (userType === "Student") {
+
+                setDoc(doc(db, "student", user.uid), {
+
+                });
+
+            } else if (userType === "Facility") {
+                    
+                setDoc(doc(db, "facility", user.uid), {
+    
+                });
+
+            }
         })
         .catch((error) => {
             const errorCode = error.code;
@@ -119,12 +147,11 @@ export function logOut (setUser) {
 onAuthStateChanged(auth, (user) => {
     if (user) {
       // User is signed in
-      //const uid = user.uid;
-
       
 
     } else {
       // User is signed out
+
 
     }
 });
@@ -169,3 +196,72 @@ export function resetPassword (email) {
         console.log(error); 
     })
 }
+
+const studentInformationConverter = {
+    toFirestore: (studentInformation) => {
+
+        return {
+            firstName: studentInformation.firstName,
+            lastName: studentInformation.lastName,
+            dateOfBirth: studentInformation.dateOfBirth,
+            address: studentInformation.streetAddress,
+            city: studentInformation.city,
+            state: studentInformation.state,
+            zipCode: studentInformation.zipCode,
+            school: studentInformation.school,
+            emergencyContactFirstName: studentInformation.emergencyContact.firstName,
+            emergencyContactLastName: studentInformation.emergencyContact.lastName,
+            emergencyContactPhoneNumber: studentInformation.emergencyContact.phoneNumber,
+            emergencyContactEmail: studentInformation.emergencyContact.email,
+            emergencyContactRelationship: studentInformation.emergencyContact.relationship,
+        };    
+    },
+    fromFirestore: (snapshot, options) => {
+        const data = snapshot.data(options);
+
+        const studentInfo = new StudentInformation(data.firstName,
+                                                    data.lastName,
+                                                    data.dateOfBirth,
+                                                    data.email,
+                                                    data.phoneNumber,
+                                                    data.address,
+                                                    data.city,
+                                                    data.state,
+                                                    data.zipCode,
+                                                    data.school);
+        
+        const emergencyContact = new studentInfo.EmergencyContact(data.emergencyContactFirstName,
+                                                                    data.emergencyContactLastName,
+                                                                    data.emergencyContactPhoneNumber,
+                                                                    data.emergencyContactEmail,
+                                                                    data.emergencyContactRelationship);
+
+        studentInfo.emergencyContact = emergencyContact;
+
+        return studentInfo;
+
+    }
+}
+
+export function studentRegistration(info) {
+    const ref = doc(db, "student", auth.currentUser.uid);
+
+    updateDoc(ref, studentInformationConverter.toFirestore(info));
+
+    updateProfile(auth.currentUser, {displayName: info.firstName + " " + info.lastName});
+
+}
+
+export function getStudentInformation(setStudentInformation) {
+    const ref = doc(db, "student", auth.currentUser.uid).withConverter(studentInformationConverter);
+    getDoc(ref).then((doc) => {
+        if (doc.exists()) {
+            setStudentInformation(doc.data());
+        } else {
+            console.log("no such document");
+        }
+    }).catch((error) => {
+        console.log(error);
+    })
+}
+

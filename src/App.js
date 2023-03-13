@@ -17,6 +17,7 @@ import Signout from "./auth/Signout";
 import Signup from "./auth/Signup";
 import { useState } from "react";
 import CurrentUser from "./auth/CurrentUser";
+import StudentRegistration from "./form/StudentRegistration";
 
 //import logo from './logo.svg';
 //import './App.css';
@@ -25,6 +26,7 @@ import CurrentUser from "./auth/CurrentUser";
 function App() {
 
   const [user, setUser] = useState("none");
+
 
   return (
     <div className="App">
@@ -35,6 +37,7 @@ function App() {
       <ChangePassword />
       <ChangeEmail />
       <PasswordResetEmail /> 
+      <StudentRegistration />
     </div>
   );
 }

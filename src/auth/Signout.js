@@ -1,4 +1,4 @@
-import { logOut } from "../firebase";
+import { logOut } from "../util/firebase";
 
 const Signout = ({setUser}) => {
     return ( 

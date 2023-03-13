@@ -1,13 +1,10 @@
 import { useState } from "react";
-import { resetPassword } from "../firebase";
+import { resetPassword } from "../util/firebase";
 import OpenEnded from "../util/OpenEnded";
 
 const PasswordResetEmail = () => {
     
     const [email, setEmail] = useState('');
-    const emailChange = (event) => {
-        setEmail(event.target.value);
-    }
 
     return ( 
         <div className="password-reset-email">

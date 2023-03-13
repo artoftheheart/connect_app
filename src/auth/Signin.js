@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { logIn } from "../firebase";
+import { logIn } from "../util/firebase";
 import OpenEnded from "../util/OpenEnded";
 
 const Signin = ({setUser}) => {

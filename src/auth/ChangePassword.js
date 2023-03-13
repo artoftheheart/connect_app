@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { changePassword } from "../firebase";
+import { changePassword } from "../util/firebase";
 import OpenEnded from "../util/OpenEnded";
 
 const ChangePassword = () => {
