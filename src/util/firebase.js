@@ -27,6 +27,7 @@ from "firebase/firestore";
 
 import { StudentInformation } from "../form/InformationClass";
 
+
 // firebase configuration from the firebase console -> project settings -> general
 const firebaseConfig = {
     apiKey: "AIzaSyCg8KffZwXeQkq_TBBCqT6jT58Zi5utAro",
@@ -90,6 +91,7 @@ export function newUser(email, password, userType, setErrorMessage, setUser) {
                 setDoc(doc(db, "student", user.uid), {
 
                 });
+
 
             } else if (userType === "Facility") {
                     

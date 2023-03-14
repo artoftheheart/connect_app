@@ -3,11 +3,13 @@ import { StudentInformation } from "./InformationClass";
 import { useState } from "react";
 import { getStudentInformation, studentRegistration } from "../util/firebase";
 import EmergencyContact from "./EmergencyContact";
+import { useNavigate } from "react-router-dom";
 
 
 const StudentRegistration = () => {
 
     const [info, setInfo] = useState(new StudentInformation());
+    const [errorMessage, setErrorMessage] = useState('');
 
     const firstNameChange = (firstName) => {
         setInfo({...info, firstName: firstName});
@@ -44,8 +46,65 @@ const StudentRegistration = () => {
     const emergencyContactChange = (emergencyContact) => {
         setInfo({...info, emergencyContact: emergencyContact});
     }
-
+/*
     const [studentInformationOutput, setStudentInformationOutput] = useState(new StudentInformation());
+    <button onClick={() => {
+        getStudentInformation(setStudentInformationOutput)
+        //console.log(studentInformationOutput)
+        //studentInformationOutput.log()
+    }}>Get Student Info</button>
+
+    <p>{studentInformationOutput.getEmergencyContactEmail()}</p>
+    */
+    const navigate = useNavigate();
+
+    const submitForm = () => {
+        if (info.firstName === '') {
+            setErrorMessage("You must enter a first name.");
+        }
+        else if (info.lastName === '') {
+            setErrorMessage("You must enter a last name.");
+        }
+        else if (info.dateOfBirth === '') {
+            setErrorMessage("You must enter a date of birth.");
+        }
+        else if (info.streetAddress === '') {
+            setErrorMessage("You must enter a street address.");
+        }
+        else if (info.city === '') {
+            setErrorMessage("You must enter a city.");
+        }
+        else if (info.state === '') {
+            setErrorMessage("You must enter a state.");
+        }
+        else if (info.zipCode === '') {
+            setErrorMessage("You must enter a zip code.");
+        }
+        else if (info.school === '') {
+            setErrorMessage("You must enter a school.");
+        } 
+        else if (info.emergencyContact.firstName === '') {
+            setErrorMessage("You must enter an emergency contact first name.");
+        }
+        else if (info.emergencyContact.lastName === '') {
+            setErrorMessage("You must enter an emergency contact last name.");
+        }
+        else if (info.emergencyContact.phoneNumber === '') {
+            setErrorMessage("You must enter an emergency contact phone number.");
+        }
+        else if (info.emergencyContact.email === '') {
+            setErrorMessage("You must enter an emergency contact email.");
+        }
+        else if (info.emergencyContact.relationship === '') {
+            setErrorMessage("You must enter an emergency contact relationship.");
+        }
+        else {
+            setErrorMessage('');
+            navigate('../');
+            studentRegistration(info);
+        }
+    
+    }
 
     return ( 
         <div className="student-registration">
@@ -64,14 +123,8 @@ const StudentRegistration = () => {
             
             {/* TODO: "add another emergency contact" button*/}
 
-            <button onClick={() => studentRegistration(info)}>Submit</button>
-            <button onClick={() => {
-                getStudentInformation(setStudentInformationOutput)
-                //console.log(studentInformationOutput)
-                //studentInformationOutput.log()
-            }}>Get Student Info</button>
-
-            <p>{studentInformationOutput.getEmergencyContactEmail()}</p>
+            <button onClick={submitForm}>Submit</button>
+            <div className="error-message"> {errorMessage} </div>
 
         </div>
     );

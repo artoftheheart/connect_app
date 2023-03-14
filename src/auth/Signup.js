@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { newUser } from "../util/firebase.js"
 import MultipleChoice from "../util/MultipleChoice.js";
 import OpenEnded from "../util/OpenEnded";
@@ -13,7 +14,7 @@ password: amanda
 */
 
 
-const Signup = ({setUser}) => {
+const Signup = ({user, setUser}) => {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -22,13 +23,35 @@ const Signup = ({setUser}) => {
     const [checkbox, setCheckbox] = useState(false);
     const [userType, setUserType] = useState('');
 
-    useEffect(() => {
+    const navigate = useNavigate();
+
+    const submitForm = () => {
+
         if (password !== confirmPassword) {
-            setErrorMessage("Passwords don't match. Try again.")
+            setErrorMessage("Passwords don't match. Try again.");
+
+        } else if (!checkbox) {
+            setErrorMessage("You must accept the terms and conditions to sign up.");
+        
+        } else if (userType === '') {
+            setErrorMessage("You must select a user type.");
+        
+        } else if (email === '') {
+            setErrorMessage("You must enter an email address.");
+        
+        } else if (password === '') {
+            setErrorMessage("You must enter a password.");
+
         } else {
             setErrorMessage('');
         }
-    }, [password, confirmPassword]);
+
+        if (errorMessage === '') {
+            newUser(email, password, userType, setErrorMessage, setUser);
+
+            navigate("../student_registration");
+        }
+    }
 
     return (
         <div className="sign-up">
@@ -48,7 +71,7 @@ const Signup = ({setUser}) => {
             <br/>
 
             <button 
-                onClick={() => newUser(email, password, userType, setErrorMessage, setUser)} 
+                onClick={submitForm} 
                 disabled={!(checkbox)}
             >Sign Up</button>
 
